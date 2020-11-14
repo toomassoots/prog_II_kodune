@@ -7,6 +7,7 @@ const app = express();
 
 const usersController=require('./api/controller/usersController')
 const washController=require('./api/controller/washController')
+const authController=require('./api/controller/authController')
 //const lecturersController=require('./api/controller/lecturersController')
 // Middleware required for receiving body from request object as JSON
 app.use(express.json());
@@ -108,12 +109,7 @@ app.put('/api/wash', washController.update);
 //  Fail: status 400 - Bad Request and error message in response body
 app.delete('/api/wash/:id', washController.delete);
 
-// Endpoint for getting list of available lecturers
-// GET - lecturers
-// Required values: none
-// Optional values: none
-// Returns: status 200 - OK and list of lecturers in response body
-
+app.post('/api/login',authController.login);
 app.listen(3000, () => {
     console.log('Server running');
 });

@@ -1,5 +1,5 @@
 
-
+const hashService=require("./hashService")
 
 const usersService={};
 const users = [
@@ -8,7 +8,7 @@ const users = [
         firstName: 'Juku',
         lastName: 'Juurikas',
         email: 'juku@juurikas.ee',
-        password: 'juku'
+        password: '$2b$10$yGfdX.8vk6TfGu2jjXOBreoLHtMURW6BJSLWsSxzps6ePVu98BfNO'
     },
     {
         id: 1,
@@ -26,15 +26,19 @@ usersService.read =()=>{
 usersService.user =(userId)=>{
     return users[userId];
 }
-usersService.create=(user)=>{
+usersService.create=async (user)=>{
     user.id= users.length;
+    user.password=await hashService.hash(user.password);
     // Add user to 'database'
+    console.log(user.password)
     users.push(user);
 
     // Create new json from newUser for response
     const userToReturn = { ... user };
+
+    console.log(userToReturn)
     // Remove password from user data
-    delete userToReturn.password;
+    //delete userToReturn.password;
     return userToReturn
 
 }
@@ -64,5 +68,11 @@ usersService.update=(user)=>{
         delete updatedUser.password
 
         return updatedUser;
+}
+
+usersService.readByEmail=(email)=>{
+    const user = users.find(user =>user.email===email);
+
+    return user
 }
 module.exports= usersService;
