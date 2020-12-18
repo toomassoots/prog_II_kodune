@@ -2,37 +2,36 @@
 const hashService=require("./hashService")
 
 const usersService={};
-const users = [
-    {
-        id: 0,
-        firstName: 'Juku',
-        lastName: 'Juurikas',
-        email: 'juku@juurikas.ee',
-        password: '$2b$10$yGfdX.8vk6TfGu2jjXOBreoLHtMURW6BJSLWsSxzps6ePVu98BfNO'
-    },
-    {
-        id: 1,
-        firstName: 'Juhan',
-        lastName: 'Juurikas',
-        email: 'juhan@juurikas.ee',
-        password: 'juhan'
-    }
-];
+const db = require('../../db.js');
 
-
-usersService.read =()=>{
+usersService.read =async()=>{
+    const usersRef = db.collection('users')
+    const snapshot = await usersRef.get();
+    const users = snapshot.docs.map(doc=>({
+        id: doc.id,
+        ...doc.data()
+    }))
     return users;
 }
-usersService.user =(userId)=>{
-    return users[userId];
+usersService.user =async(userId)=>{
+    console.log(userId);
+    const doc = await db.collection('users').doc(userId).get();
+    console.log(doc)
+    if(!doc.exists){
+        console.log("No such document");
+        return false;
+    }
+        const user=doc.data();
+        console.log(user);
+
+    return user;
 }
 usersService.create=async (user)=>{
-    user.id= users.length;
     user.password=await hashService.hash(user.password);
     // Add user to 'database'
     console.log(user.password)
-    users.push(user);
-
+    const res = await db.collection('users').doc(user.email).set(user)
+    console.log(res);
     // Create new json from newUser for response
     const userToReturn = { ... user };
 
@@ -42,37 +41,40 @@ usersService.create=async (user)=>{
     return userToReturn
 
 }
-usersService.update=(user)=>{
-    
+usersService.update= async (user)=>{
+    let update={};
         // Check if optional data exists
         if (user.firstName) {
             // Change user data in 'database'
-            users[user.id].firstName = user.firstName;
+           update.firstName = user.firstName;
         }
         // Check if optional data exists
         if (user.lastName) {
             // Change user data in 'database'
-            users[user.id].lastName = user.lastName;
+            update.lastName = user.lastName;
         }
         // Check if optional data exists
         if (user.email) {
             // Change user data in 'database'
-            users[user.id].email = user.email;
+            update.email = user.email;
         }
         // Check if optional data exists
         if (user.password) {
             // Change user data in 'database'
-            users[user.id].password = user.password;
+            
+            update.password = await hashService.hash(user.password);
         }
-        const updatedUser={... users[user.id]}
-        delete updatedUser.password
-
-        return updatedUser;
+        await db.collection('users').doc(user.id).update(update);
+        return true;
 }
-
-usersService.readByEmail=(email)=>{
-    const user = users.find(user =>user.email===email);
-
+usersService.readByEmail=async(email)=>{
+    const userRef = db.collection('users');
+    const snapshot = await usersRef.where('email', '==', email).get();
+    if(snapshot.empty){
+        console.log('No matching user.');
+        return;
+    }
+    const user = snapshot.docs[0].data();
     return user
 }
 module.exports= usersService;

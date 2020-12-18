@@ -1,21 +1,31 @@
 const usersService = require('../service/usersService')
 const usersController= {};
-usersController.read = (req, res) => {
+usersController.read =async (req, res) => {
     // Return list of users
-    const users = usersService.read();
+    const users =  await usersService.read();
     res.status(200).json({
         success: true,
         users: users
     });
 }
-usersController.user=(req, res) => {
+usersController.user=async(req, res) => {
     // Return user with specified id
     const userId= req.params.id
-    const users= usersService.user(userId)
+    const users= await usersService.user(userId)
     res.status(200).json({
         success: true,
         user: users
     });
+}
+
+usersController.userByEmail=async(req, res)=>{
+    const email = req.params.email
+    console.log(email)
+    const user= await usersService.readByEmail(email)
+    res.status(200).json({
+        success: true,
+        user: user
+    })
 }
 usersController.create=async (req, res) => {
     // Check if provided data is expected type (typeof) and has length when whitespace is removed (.trim().length)
@@ -48,10 +58,10 @@ usersController.create=async (req, res) => {
         });
     }
 }
-usersController.update=(req, res) => {
+usersController.update= async(req, res) => {
     // Next lines checking if provided data is expected type (typeof) and has length when whitespace is removed (.trim().length)
     // Ternary operator: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
-    const id = typeof(req.body.id) === 'number' ? req.body.id : false;
+    const id = typeof(req.body.id) === 'string' ? req.body.id : false;
     /* Same as:
     let id;
      if (typeof(req.body.id) === 'number') {
@@ -76,7 +86,7 @@ usersController.update=(req, res) => {
         password
     };
 
-    const updatedUser = usersService.update(user);
+    const updatedUser =  await usersService.update(user);
         // Return updated user data
         res.status(200).json({
             success: true,

@@ -39,7 +39,9 @@ app.get('/api/users', usersController.read);
 // Required: id
 // Optional: none
 // Returns: status 200 - OK and user data in response body
+//app.get('/api/users/:email', usersController.userByEmail);
 app.get('/api/users/:id', usersController.user);
+
 
 // Endpoint for creating new user
 // POST - users

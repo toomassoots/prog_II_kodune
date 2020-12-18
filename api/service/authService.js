@@ -1,9 +1,10 @@
-const { hash } = require("./hashService");
+
 const hashService = require("./hashService");
 const usersService = require("./usersService");
-const usresService = require("./usersService")
+const jwt = require('jsonwebtoken');
+const config = require('../../config');
 const authService ={}
-
+ 
 authService.login= async (email, password) =>{
     const user = usersService.readByEmail(email);
     if(user){
