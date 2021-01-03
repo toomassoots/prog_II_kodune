@@ -6,7 +6,7 @@ const app = express();
 // Module import
 
 const usersController=require('./api/controller/usersController')
-//const washController=require('./api/controller/washController')
+
 const carsController=require('./api/controller/carsController')
 const ordersController=require('./api/controller/ordersController')
 const authController=require('./api/controller/authController')
@@ -87,14 +87,14 @@ app.get('/api/ordersActive/', ordersController.activeOrders);
 //app.get('/api/order/:id', ordersController.readById);
 app.post('/api/order', ordersController.create);
 app.put('/api/order/:id', ordersController.update);
-//app.delete('/api/order', ordersController.delete);
-/*//User Car
-app.get('/api/subjects/:id', carsController.readById);
-app.post('/api/subjects', carsController.create);
-app.put('/api/subjects', carsController.update);
-app.delete('/api/subjects', carsController.delete);
-app.post('/api/login',authController.login);
-*/
+app.delete('/api/order', ordersController.delete);
+//User Car
+app.get('/api/cars/:id', carsController.mycars);
+app.get('/api/car/:id', carsController.car);
+app.post('/api/cars', carsController.create);
+app.put('/api/cars', carsController.update);
+app.delete('/api/cars', carsController.delete);
+
 module.exports=app;
 /*
 // Endpoint for getting list of available users

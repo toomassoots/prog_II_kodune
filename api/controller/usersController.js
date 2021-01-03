@@ -103,14 +103,16 @@ usersController.update= async(req, res) => {
     });
 }
 }
-usersController.delete=(req, res) => {
+usersController.delete=async(req, res) => {
     // Check if required data exists
     const id = typeof(req.body.id) === 'number' ? req.body.id : false;
+
     if(id || id === 0) {
         users.splice(id, 1);
+        const result= await usersService.delete(usersID)
         // Return success message
         res.status(200).json({
-            success: true
+            success: result
         });
     } else {
         // Return error message

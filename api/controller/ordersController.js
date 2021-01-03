@@ -76,12 +76,11 @@ ordersController.update=async (req, res) => {
         wash_types_id,
         active 
     };
-
     const updatedOrder = await ordersService.update(order);
         // Return updated user data
         res.status(200).json({
             success: true,
-            order: updatedOrder
+            orders: order
         });
    
 } else {
@@ -92,14 +91,15 @@ ordersController.update=async (req, res) => {
     });
 }
 }
-ordersController.delete=(req, res) => {
+ordersController.delete=async(req, res) => {
     // Check if required data exists
     const id = typeof(req.body.id) === 'number' ? req.body.id : false;
     if(id || id === 0) {
         orders.splice(id, 1);
-        // Return success message
+        const result= await ordersService.delete(id)
+   
         res.status(200).json({
-            success: true
+            success: result
         });
     } else {
         // Return error message
