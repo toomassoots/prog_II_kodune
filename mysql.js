@@ -3,8 +3,8 @@ const { on } = require('nodemon');
 
 var con= mysql.createConnection({
     host:"localhost",
-    user:"admin",
-    password:"admin"
+    user:"root",
+    password:"root"
 })
 
 con.connect(function(err){

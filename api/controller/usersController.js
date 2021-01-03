@@ -29,19 +29,21 @@ usersController.userByEmail=async(req, res)=>{
 }
 usersController.create=async (req, res) => {
     // Check if provided data is expected type (typeof) and has length when whitespace is removed (.trim().length)
-    const firstName = typeof(req.body.firstName) === 'string' && req.body.firstName.trim().length > 0 ? req.body.firstName : false;
-    const lastName = typeof(req.body.lastName) === 'string' && req.body.lastName.trim().length > 0 ? req.body.lastName : false;
+    const name = typeof(req.body.name) === 'string' && req.body.name.trim().length > 0 ? req.body.name : false;
     const email = typeof(req.body.email) === 'string' && req.body.email.trim().length > 0 ? req.body.email : false;
+    const phone = typeof(req.body.phone) === 'number'? req.body.phone : false;
+    const address= typeof(req.body.address) === 'string' && req.body.address.trim().length? req.body.address: false;
     const password = typeof(req.body.password) === 'string' && req.body.password.trim().length > 2 ? req.body.password : false;
 
     // Check if required data exists
-    if (firstName && lastName && email && password) {
+    if (name && email && phone && password) {
         // Create new json with user data
         
         const user = {
-            firstName,
-            lastName,
+            name,
             email,
+            phone,
+            address,
             password
         };
         const newUser  = await usersService.create(user);

@@ -1,16 +1,13 @@
 
 const hashService=require("./hashService")
 
-const usersService={};
+ 
 const db = require('../../db.js');
 
+usersService=  {};
+
 usersService.read =async()=>{
-    const usersRef = db.collection('users')
-    const snapshot = await usersRef.get();
-    const users = snapshot.docs.map(doc=>({
-        id: doc.id,
-        ...doc.data()
-    }))
+    const users= await db.query('SELECT kasutajad_id, name, email, phone FROM users WHERE active=1')
     return users;
 }
 usersService.user =async(userId)=>{
@@ -30,15 +27,17 @@ usersService.create=async (user)=>{
     user.password=await hashService.hash(user.password);
     // Add user to 'database'
     console.log(user.password)
-    const res = await db.collection('users').doc(user.email).set(user)
-    console.log(res);
+    const result = await db.query('INSERT INTO users SET?', [user]);
+    
+    console.log(result);
     // Create new json from newUser for response
-    const userToReturn = { ... user };
-
-    console.log(userToReturn)
+    if(result.affectedRows ===0){
+        return false;
+    }
+    //console.log(userToReturn)
     // Remove password from user data
     //delete userToReturn.password;
-    return userToReturn
+    return result.insertId;
 
 }
 usersService.update= async (user)=>{
@@ -68,13 +67,13 @@ usersService.update= async (user)=>{
         return true;
 }
 usersService.readByEmail=async(email)=>{
-    const userRef = db.collection('users');
-    const snapshot = await usersRef.where('email', '==', email).get();
-    if(snapshot.empty){
-        console.log('No matching user.');
-        return;
-    }
-    const user = snapshot.docs[0].data();
-    return user
+
+    if(!email) return false;
+
+    const users = await db.query('SELECT * FROM users WHERE email=?', [email])
+    if(users.lenght<1) return false;
+    console.log(users[0])
+    return users[0];
+
 }
 module.exports= usersService;

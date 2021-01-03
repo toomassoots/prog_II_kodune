@@ -1,16 +1,16 @@
 const bcrypt  = require('bcrypt');
-const  saltRounds = 10;
+//const  {saltRounds} = require('../../config.js');
 
 const hashService =  {
     
 }
 hashService.hash=async(password)=>{
     
-    const hash = await bcrypt.hashSync(password, saltRounds);
-    console.log(hash)
+    const hash = await bcrypt.hashSync(password, 10);
     return hash;
 }
 hashService.compare = async(password, hash)=>{
     const match = await bcrypt.compare(password, hash);
+    return match;
 }
 module.exports=hashService;
