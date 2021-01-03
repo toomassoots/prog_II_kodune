@@ -84,7 +84,6 @@ app.get('/api/ordersActive/', ordersController.activeOrders);
 
 
 //User orders
-//app.get('/api/order/:id', ordersController.readById);
 app.post('/api/order', ordersController.create);
 app.put('/api/order/:id', ordersController.update);
 app.delete('/api/order', ordersController.delete);

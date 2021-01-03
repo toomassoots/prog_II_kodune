@@ -1,13 +1,24 @@
+const { request } = require('express');
 const carsService = require('../service/carsService')
 const carsController= {};
 
 carsController.mycars =async (req, res) => {
-    const userId= 5;
-    const cars = await carsService.mycars(userId);
+    const userid=req.params.id
+    //const userId= 5;
+    
+    const cars = await carsService.mycars(userid);
+    
+    if(!cars.length){
     res.status(201).json({
         success: true,
         cars: cars
-    });
+    })}else{
+        res.status(400).json({
+            success: false,
+            message: 'Required field(s) missing or invalid'
+        });
+
+    }
 }
 carsController.car= async(req, res) => {
    
